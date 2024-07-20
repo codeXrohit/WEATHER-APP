@@ -13,13 +13,19 @@ body {
      height: 35.5px;
      border-radius: 4px;
      padding-left: 15px;
-     border: none;
-     border: 1px dotted rgba(245, 222, 179, 0.54);
+     border: 1.7px dotted #000000;
+    
  }
  
  .search:hover {
      border: 1.7px dotted rgb(147, 99, 9);
  }
+ input:focus, select:focus, textarea:focus, button:focus {
+    outline: none;
+}
+input::placeholder {
+    color: #000000f4;
+}
  
  .button {
      width: 120px;
@@ -32,7 +38,7 @@ body {
  }
  
  .button:hover {
-     border: 2px dotted rgb(147, 99, 9);
+     border: 1.7px dotted rgb(147, 99, 9);
  }
  
  .navbar {
