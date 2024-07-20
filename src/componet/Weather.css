@@ -13,12 +13,12 @@ body {
      height: 35.5px;
      border-radius: 4px;
      padding-left: 15px;
-     border: 1.7px dotted #000000;
+     border: 1px dotted #000000;
     
  }
  
  .search:hover {
-     border: 1.7px dotted rgb(147, 99, 9);
+     border: 1px dotted rgb(147, 99, 9);
  }
  input:focus, select:focus, textarea:focus, button:focus {
     outline: none;
@@ -34,11 +34,11 @@ input::placeholder {
      border-radius: 4px;
      margin-left: 2px;
      background-color: #c78c40;
-     border: none;
+     border: 1px dotted rgb(147, 99, 9);
  }
  
  .button:hover {
-     border: 1.7px dotted rgb(147, 99, 9);
+     border: 1px dotted rgb(147, 99, 9);
  }
  
  .navbar {
