@@ -1,95 +1,75 @@
-import React, { createContext, useEffect, useState } from 'react'
-import css from './Weather.css'
-import axios from 'axios'
-import { Link } from 'react-router-dom'
-
+import React, { createContext, useEffect, useState } from 'react';
+import css from './Weather.css';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 export const UserContext = createContext();
 
 const Weather = () => {
+  const [data, setData] = useState([]);
+  const [cityName, setCityName] = useState("");
+  const [List, setList] = useState([]);
 
-
-  const [data, setData] = useState([])
-  const [cityName, setCityName] = useState("")
-  const [List, setList] = useState([])
-  const [userdata, setUserData] = useState({ cityName })
+  const [userdata, setUserData] = useState({ cityName });
 
   let src;
   if (data?.main?.temp - 273.15 <= 1) {
-    src = "it's Look Like Snow-Fall"
-
+    src = "it's Look Like Snow-Fall";
+  } else if (data?.main?.temp - 273.15 >= 1 && data?.main?.temp - 273.15 <= 15) {
+    src = "it's Rainy Day";
+  } else if (data?.main?.temp - 273.15 >= 15 && data?.main?.temp - 273.15 <= 40) {
+    src = "it's Sunny Day";
+  } else {
+    src = "it's Cloud Day";
   }
-  else if (data?.main?.temp - 273.15 >= 1 && data?.main?.temp - 273.15 <= 15) {
-    src = "it's Rainy Day"
-  }
-  else if (data?.main?.temp - 273.15 >= 15 && data?.main?.temp - 273.15 <= 40) {
-    src = " it's Sunny Day"
-  }
-  else {
-    src = "it's Cloud Day"
-  }
-
-
 
   let imgsrc;
   if (data?.main?.temp - 273.15 <= 1) {
-    imgsrc = "media/snow.png"
-
+    imgsrc = "media/snow.png";
+  } else if (data?.main?.temp - 273.15 >= 1 && data?.main?.temp - 273.15 <= 15) {
+    imgsrc = "media/rain.png";
+  } else if (data?.main?.temp - 273.15 >= 15 && data?.main?.temp - 273.15 <= 40) {
+    imgsrc = "media/clear.png";
+  } else {
+    imgsrc = "media/cloud.png";
   }
-  else if (data?.main?.temp - 273.15 >= 1 && data?.main?.temp - 273.15 <= 15) {
-    imgsrc = "media/rain.png"
-  }
-  else if (data?.main?.temp - 273.15 >= 15 && data?.main?.temp - 273.15 <= 40) {
-    imgsrc = "media/clear.png"
-  }
-  else {
-    imgsrc = "media/cloud.png"
-  }
-
 
   function getWeatherapi(city) {
-    const apiurl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=376df6d213b9aa00692ccb0a4810152c`
+    const apiurl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=376df6d213b9aa00692ccb0a4810152c`;
 
     axios.get(apiurl).then((res) => {
-      setData(res.data)
+      setData(res.data);
     }).catch((err) => {
-      console.log(err)
-
-    })
+      console.log(err);
+    });
   }
 
-
-
-
-
-  const search = () => {
-  }
   function handlesearch() {
-    setList((List) => {
+    if (cityName.trim() !== "") {
+      setList((List) => {
+        const updateList = [...List, cityName];
+        return updateList;
+      });
 
-      const updateList = ([...List, cityName])
-      return updateList
+      getWeatherapi(cityName);
+      setCityName("");
+    }
+  }
 
+  function handleRemove(i) {
+    const RemoveItem = List.filter((ele, id) => i !== id);
+    setList(RemoveItem);
+  }
 
-    })
-
-
-    getWeatherapi(cityName)
-    setCityName("")
+  function handleKeyDown(e) {
+    if (e.key === 'Enter') {
+      handlesearch();
+    }
   }
 
   useEffect(() => {
-    getWeatherapi("")
-  },)
-
-
-  function handleRemove(i) {
-    const RemoveItem = List.filter((ele, id) => {
-      return i != id
-    })
-    setList(RemoveItem)
-  }
-
+    getWeatherapi("");
+  }, []);
 
 
   return (
@@ -98,49 +78,23 @@ const Weather = () => {
 
 
       <div>
-        <nav id='nav' className="navbar navbar-expand-lg ">
-          <div className="container-fluid">
-
-            <div className="nav-logo">
-              <div className="logo"></div>
-            </div>
-            <a id='name' className="navbar-brand" href="#">Weather</a>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse " >
-              <ul className="navbar-nav ">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/Home">Home</Link>
-                </li>
-                <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    About The App
-                  </a>
-                  <ul className="dropdown-menu">
-                    <li><a className="dropdown-item" href="#">Get By The Zip Code </a></li>
-                    <li><a className="dropdown-item" href="#">Get By The City Name</a></li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li> <Link className="dropdown-item" to="#">Your Search History</Link></li>
-                  </ul>
-                </li>
-
-              </ul>
-
-              <input type="text" placeholder="Enter Your Loction..." class="form-control mt-3" className='search' value={cityName} onChange={(e) => { setCityName(e.target.value) }}></input>
-
-              <button type="submit" class="btn btn-primary form-control" className='button' onClick={handlesearch}>Search</button>
-
-            </div>
+      <nav id='nav' class="navbar">
+  <div class="container-fluid">
+  <div className="nav-logo">
+    <a href="">
+              <img className='logo' src="media/img 1.png" alt="Weather" />
+              </a>
+   </div>
+    <div style={{display: 'flex'}}>
+    <input type="text" placeholder="Enter Your Loction..." class="form-control mt-3" className='search' value={cityName} onChange={(e) => { setCityName(e.target.value)}}onKeyDown={handleKeyDown}></input>
+    <button type="submit" class="btn btn-primary form-control" className='button' onClick={handlesearch}>Search</button>
           </div>
-        </nav>
-
-
-
-      </div>
+               </div>
+          </nav>
+     </div>
 
       <br />
-      <div style={{marginLeft: '100px'}}>
+      <div style={{width: '100%'}}>
       <div>
         {
           data?.main ? (<div className='Data'>
